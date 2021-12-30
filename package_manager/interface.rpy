@@ -95,7 +95,7 @@ screen package_installer_input():
 
     frame:
         style "l_root"
-        
+
         vbox:
             label _("Install a third party python package")
             text _("By default, packages will be fetched from the Python Package Index.") style "l_text"
@@ -111,6 +111,7 @@ screen package_installer_input():
                     frame:
                         style "l_input_frame"
                         xalign 0.5
+
                         if input_focus == 1:
                             input:
                                 style "l_input_text"
@@ -122,6 +123,8 @@ screen package_installer_input():
                                 text_style "l_input_text"
                                 action SetScreenVariable("input_focus", 1)
 
+                    textbutton _("Install") action Return(package_name)
+
 
     textbutton _("Package Installer Settings"):
         style "l_right_button"
@@ -131,25 +134,32 @@ screen package_installer_input():
 
 
 screen package_installer_output(output):
-    text _("Output:")
     frame:
-        style_group "l_info"
-        ymaximum 400
-
-        viewport:
-            mousewheel True
-            draggable True
-            scrollbars "vertical"
-
-            python:
-                try:
-                    info = str(output)
-                    output_display = Text(info, substitute=False)
+        style "l_root"
+    
+        bottom_padding 16
+        top_padding 16
+    
+        vbox:
+            text _("Output:")
+        
+            frame:
+                style_group "l_info"
+                ymaximum 400
                 
-                except Exception as e:
-                    output_display = str(info)
+                ypos 0
 
-            text output_display
+                side "c r":
+                    viewport id "pm_output":
+                        mousewheel True
+                        draggable True
+                        
+                        python:
+                            output_display = Text(str(output), substitute=False, style="l_text")
+
+                        text output_display style "l_text"
+                    
+                    vbar value YScrollValue('pm_output') style "l_vscrollbar"
     
     textbutton _("Return") action Jump("front_page") style "l_left_button"
 
